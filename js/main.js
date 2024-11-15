@@ -12,10 +12,13 @@ function openAuthModal() {
     inputLogin.value = '';
     inputPassword.value = '';
     inputLogin.classList.remove('input-error');
+    inputPassword.classList.remove('input-error');
+    document.body.style.overflow = 'hidden';
 }
 
 function closeAuthModal() {
     modalWindowAuth.style.display = 'none';
+    document.body.style.overflow = '';
 }
 
 function loginUser(login) {
@@ -50,10 +53,24 @@ closeModalWindowAuthBtn.addEventListener('click', closeAuthModal);
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const login = inputLogin.value.trim();
+    const password = inputPassword.value.trim();
+
+    let hasError = false;
+
     if (!login) {
         inputLogin.classList.add('input-error');
+        hasError = true;
     } else {
         inputLogin.classList.remove('input-error');
+    }
+    if (!password) {
+        inputPassword.classList.add('input-error');
+        hasError = true;
+    } else {
+        inputPassword.classList.remove('input-error');
+    }
+
+    if (!hasError) {
         loginUser(login);
     }
 });
