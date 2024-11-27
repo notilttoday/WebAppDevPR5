@@ -65,7 +65,6 @@ function loginUser(login) {
     userNameDisplay.textContent = login;
     userNameDisplay.style.display = 'block';
     closeAuthModal();
-    updateCards();
 }
 
 function logoutUser() {
@@ -73,7 +72,6 @@ function logoutUser() {
     loginButton.style.display = 'block';
     logoutButton.style.display = 'none';
     userNameDisplay.textContent = '';
-    updateCards();
 }
 
 window.addEventListener('load', () => {
