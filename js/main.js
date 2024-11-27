@@ -8,24 +8,12 @@ const logoutButton = document.querySelector('.button-out');
 const userNameDisplay = document.querySelector('.user-name');
 const list = document.querySelector('.cards-restaurants')
 
-function isUserAuthorized() {
-    const savedUser = localStorage.getItem('user');
-    
-    return savedUser ? 'restaurant.html' : null;
-}
-
 function createCard() {
     const card = document.createElement('div');
     card.className = 'card';
 
-    const link = isUserAuthorized();
-    console.log(link)
-    const cardLink = link 
-        ? `<a href="${link}" class="card card-restaurant">`
-        : `<a href="#" class="card card-restaurant" onclick="openAuthModal()">`;
-
     card.insertAdjacentHTML('beforeend', `
-        ${cardLink}
+        <a href="restaurant.html" class="card-link">
             <img src="img/tanuki/preview.jpg" alt="image" class="card-image" />
             <div class="card-text">
                 <div class="card-heading">
@@ -129,5 +117,14 @@ loginForm.addEventListener('submit', (e) => {
 modalWindowAuth.addEventListener('click', (e) => {
     if (e.target === modalWindowAuth) {
         closeAuthModal();
+    }
+});
+
+list.addEventListener('click', (event) => {
+    const cardLink = event.target.closest('.card-link');
+
+    if (cardLink && !localStorage.getItem('user')) {
+        event.preventDefault();
+        openAuthModal();
     }
 });
