@@ -7,7 +7,14 @@
   <title>Delivery Food — доставка їжі додому</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic" rel="stylesheet" />
   <link rel="stylesheet" href="css/normalize.css" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
+
+<link rel="stylesheet" href="css/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="js/swiper.js" type="module" defer></script>
 </head>
 
 <body>
@@ -40,32 +47,38 @@
 
   <main class="main">
     <div class="container">
-      <section class="container-promo">
-        <section class="promo pizza">
-          <h1 class="promo-title">Онлайн-сервіс <br />доставки їжі додому</h1>
-          <p class="promo-text">
-            Страви з улюбленого ресторану привезе кур'єр
-          </p>
+      <div class="swiper">
+        <section class="container-promo swiper-wrapper">
+          <section class="promo pizza swiper-slide">
+            <h1 class="promo-title">Онлайн-сервіс <br />доставки їжі додому</h1>
+            <p class="promo-text">
+              Страви з улюбленого ресторану привезе кур'єр
+            </p>
+          </section>
+          <section class="promo kebab swiper-slide">
+            <h1 class="promo-title">Шашлики <br> зі знижкою 35%</h1>
+            <p class="promo-text">
+              Закажіть шашлики у будь-якому ресторані до 24 серпня та отримайте знижку за промокодом VIVAT
+            </p>
+          </section>
+          <section class="promo vegetables swiper-slide">
+            <h1 class="promo-title">Знижка 20% на всю іжу <br> за промокодом LOVE.JS</h1>
+            <p class="promo-text">
+              Страву з ресторану привезуть разом із двома подарунковими книгами по фронтендуторана привезут вместе с двумя подарочными книгами по фронтенду
+            </p>
+          </section>
+          <section class="promo sushi swiper-slide">
+            <h1 class="promo-title">Сети зі знижкою до 30% <br> у ресторанах</h1>
+            <p class="promo-text">
+              Знижки на сети до 1 вересня за промокодом DADADA
+            </p>
+          </section>
         </section>
-        <!-- <section class="promo kebab">
-          <h1 class="promo-title">Шашлики <br> зі знижкою 35%</h1>
-          <p class="promo-text">
-            Закажіть шашлики у будь-якому ресторані до 24 серпня та отримайте знижку за промокодом VIVAT
-          </p>
-        </section>
-        <section class="promo vegetables">
-          <h1 class="promo-title">Знижка 20% на всю іжу <br> за промокодом LOVE.JS</h1>
-          <p class="promo-text">
-            Страву з ресторану привезуть разом із двома подарунковими книгами по фронтендуторана привезут вместе с двумя подарочными книгами по фронтенду
-          </p>
-        </section>
-        <section class="promo sushi">
-          <h1 class="promo-title">Сети зі знижкою до 30% <br> у ресторанах</h1>
-          <p class="promo-text">
-            Знижки на сети до 1 вересня за промокодом DADADA
-          </p>
-        </section> -->
-      </section>
+        <div class="swiper-pagination"></div>
+
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
       <section class="restaurants">
         <div class="section-heading">
           <h2 class="section-title">Ресторани</h2>

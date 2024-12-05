@@ -183,11 +183,11 @@ button {
     box-shadow: 0 7px 12px rgba(158, 158, 163, 0.1);
     border-radius: 10px;
     padding: 68px 70px;
-    margin-bottom: 56px;
+    height: 416px;
 }
 
 .pizza {
-    background: #fff1b8 url(../img/promo/pizza.png) no-repeat top -100px right -250px / 830px
+    background: #fff1b8 url(../img/promo/pizza.png) no-repeat top -100px right -250px / 830px;
 }
 
 .kebab {
@@ -195,11 +195,11 @@ button {
 }
 
 .vegetables {
-    background: #FFF566 url(../img/promo/vegetables.png) no-repeat top 0 right 0 / 825px
+    background: #FFF566 url(../img/promo/vegetables.png) no-repeat top 0 right 0 / 950px;
 }
 
 .sushi {
-    background: #FFF1F0 url(../img/promo/sushi.png) no-repeat top 10px right 15px / 500px
+    background: #FFF1F0 url(../img/promo/sushi.png) no-repeat top 10px right 15px / 500px;
 }
 
 .promo-title {
@@ -577,6 +577,10 @@ button {
     padding: 15px 20px;
     font-size: 20px;
     line-height: 23px;
+}
+
+.swiper {
+    margin-bottom: 50px;
 }
 
 @media (max-width: 1366px) {
