@@ -8,41 +8,150 @@ const logoutButton = document.querySelector('.button-out');
 const userNameDisplay = document.querySelector('.user-name');
 const list = document.querySelector('.cards-restaurants')
 
-function createCard() {
+function createRestaurantCard(restaurant) {
+    const { name, image, stars, price, kitchen, products, time_of_delivery } = restaurant;
+
     const card = document.createElement('div');
     card.className = 'card';
+    card.dataset.products = products;
 
     card.insertAdjacentHTML('beforeend', `
-        <a href="restaurant.html" class="card-link">
-            <img src="img/tanuki/preview.jpg" alt="image" class="card-image" />
+        <a href="#" class="card-link">
+            <img src="${image}" alt="${name}" class="card-image" />
             <div class="card-text">
                 <div class="card-heading">
-                    <h3 class="card-title">Танукі</h3>
-                    <span class="card-tag tag">60 хвилин</span>
+                    <h3 class="card-title">${name}</h3>
+                    <span class="card-tag tag">${time_of_delivery} хвилин</span>
                 </div>
-                <!-- /.card-heading -->
                 <div class="card-info">
-                    <div class="rating">
-                        4.5
-                    </div>
-                    <div class="price">От 1 200 ₴</div>
-                    <div class="category">Суші, роли</div>
+                    <div class="rating">${stars}</div>
+                    <div class="price">От ${price} ₴</div>
+                    <div class="category">${kitchen}</div>
                 </div>
-                <!-- /.card-info -->
             </div>
-            <!-- /.card-text -->
         </a>
     `);
     return card;
 }
 
-function updateCards() {
-    list.innerHTML = '';
-    list.append(createCard())
-    list.append(createCard())
-    list.append(createCard())
+function createMenuItemCard(item) {
+    const { name, description, price, image } = item;
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    card.insertAdjacentHTML('beforeend', `
+        <img src="${image}" alt="${name}" class="card-image" />
+        <div class="card-text">
+            <div class="card-heading">
+                <h3 class="card-title card-title-reg">${name}</h3>
+            </div>
+            <div class="card-info">
+                <div class="ingredients">${description}</div>
+            </div>
+            <div class="card-buttons">
+                <button class="button button-primary button-add-cart">
+                    <span class="button-card-text">У кошик</span>
+                </button>
+                <strong class="card-price-bold">${price} ₴</strong>
+            </div>
+        </div>
+    `);
+    return card;
 }
-updateCards()
+
+async function fetchRestaurants() {
+    try {
+        const response = await fetch('./json/partners.json');
+        if (!response.ok) throw new Error('Не вдалося завантажити дані ресторанів');
+        const restaurants = await response.json();
+        list.innerHTML = '';
+        restaurants.forEach(restaurant => {
+            const card = createRestaurantCard(restaurant);
+            list.append(card);
+        });
+    } catch (error) {
+        console.error('Помилка:', error);
+    }
+}
+
+async function fetchMenu(menuPath) {
+    try {
+        const response = await fetch(`./json/${menuPath}`);
+        if (!response.ok) throw new Error('Не вдалося завантажити меню');
+        const menu = await response.json();
+        menuList.innerHTML = '';
+        menu.forEach(item => {
+            const card = createMenuItemCard(item);
+            menuList.append(card);
+        });
+    } catch (error) {
+        console.error('Помилка:', error);
+    }
+}
+
+function getQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        name: params.get('name'),
+        menu: params.get('menu'),
+        stars: params.get('stars'),
+        price: params.get('price'),
+        category: params.get('category'),
+    };
+}
+
+async function loadRestaurantMenu() {
+    const restaurantTitle = document.querySelector('.restaurant-title');
+    const rating = document.querySelector('.rating');
+    const price = document.querySelector('.price');
+    const category = document.querySelector('.category');
+    const cardsMenu = document.querySelector('.cards-menu');
+
+    if (!restaurantTitle || !rating || !price || !category || !cardsMenu) {
+        console.warn('Ця функція працює лише на сторінці restaurant.html');
+        return;
+    }
+
+    const { name, menu, stars, price: menuPrice, category: menuCategory } = getQueryParams();
+
+    restaurantTitle.textContent = name;
+    rating.textContent = stars;
+    price.textContent = `От ${menuPrice}`;
+    category.textContent = menuCategory;
+
+    try {
+        const response = await fetch(`./json/${menu}`);
+        if (!response.ok) throw new Error('Не вдалося завантажити меню');
+        const menuItems = await response.json();
+
+        cardsMenu.innerHTML = '';
+        menuItems.forEach((item) => {
+            const menuCard = createMenuItemCard(item);
+            cardsMenu.append(menuCard);
+        });
+    } catch (error) {
+        console.error('Помилка при завантаженні меню:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadRestaurantMenu)
+
+list.addEventListener('click', (event) => {
+    const card = event.target.closest('.card');
+    
+    if (card) {
+        const menuPath = card.dataset.products;
+        const restaurantName = card.querySelector('.card-title').textContent;
+        const stars = card.querySelector('.rating').textContent;
+        const price = card.querySelector('.price').textContent;
+        const category = card.querySelector('.category').textContent;
+
+        window.location.href = `restaurant.html?name=${restaurantName}&menu=${menuPath}&stars=${stars}&price=${price}&category=${category}`;
+    }
+});
+
+fetchRestaurants();
 
 function openAuthModal() {
     modalWindowAuth.style.display = 'flex';
