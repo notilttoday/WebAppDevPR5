@@ -7,6 +7,9 @@ const loginButton = document.querySelector('.button-auth');
 const logoutButton = document.querySelector('.button-out');
 const userNameDisplay = document.querySelector('.user-name');
 const list = document.querySelector('.cards-restaurants')
+const search = document.querySelector('.input-search');
+const restaurantCardsContainer = document.querySelector('.cards-restaurants');
+const sectionTitle = document.querySelector('.section-title');
 
 function createRestaurantCard(restaurant) {
     const { name, image, stars, price, kitchen, products, time_of_delivery } = restaurant;
@@ -25,7 +28,7 @@ function createRestaurantCard(restaurant) {
                 </div>
                 <div class="card-info">
                     <div class="rating">${stars}</div>
-                    <div class="price">От ${price} ₴</div>
+                    <div class="price">Від ${price} ₴</div>
                     <div class="category">${kitchen}</div>
                 </div>
             </div>
@@ -117,7 +120,7 @@ async function loadRestaurantMenu() {
 
     restaurantTitle.textContent = name;
     rating.textContent = stars;
-    price.textContent = `От ${menuPrice}`;
+    price.textContent = `${menuPrice}`;
     category.textContent = menuCategory;
 
     try {
@@ -138,16 +141,22 @@ async function loadRestaurantMenu() {
 document.addEventListener('DOMContentLoaded', loadRestaurantMenu)
 
 list.addEventListener('click', (event) => {
-    const card = event.target.closest('.card');
-    
-    if (card) {
-        const menuPath = card.dataset.products;
-        const restaurantName = card.querySelector('.card-title').textContent;
-        const stars = card.querySelector('.rating').textContent;
-        const price = card.querySelector('.price').textContent;
-        const category = card.querySelector('.category').textContent;
+    const cardLink = event.target.closest('.card-link');
 
-        window.location.href = `restaurant.html?name=${restaurantName}&menu=${menuPath}&stars=${stars}&price=${price}&category=${category}`;
+    if (cardLink) {
+        if (!localStorage.getItem('user')) {
+            event.preventDefault();
+            openAuthModal();
+        } else {
+            const card = cardLink.closest('.card');
+            const menuPath = card.dataset.products;
+            const restaurantName = card.querySelector('.card-title').textContent;
+            const stars = card.querySelector('.rating').textContent;
+            const price = card.querySelector('.price').textContent;
+            const category = card.querySelector('.category').textContent;
+
+            window.location.href = `restaurant.html?name=${restaurantName}&menu=${menuPath}&stars=${stars}&price=${price}&category=${category}`;
+        }
     }
 });
 
@@ -233,5 +242,44 @@ list.addEventListener('click', (event) => {
     if (cardLink && !localStorage.getItem('user')) {
         event.preventDefault();
         openAuthModal();
+    }
+});
+
+search.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        const query = event.target.value.trim();
+
+        const cards = restaurantCardsContainer.querySelectorAll('.card');
+
+        if (!query) {
+            sectionTitle.textContent = 'Ресторани';
+
+            search.classList.add('input-error');
+
+            setTimeout(() => {
+                search.classList.remove('input-error');
+            }, 1500);
+
+            search.value = '';
+
+            cards.forEach(card => {
+                card.style.display = '';
+            });
+
+            return;
+        }
+        
+        sectionTitle.textContent = 'Результат пошуку';
+
+        cards.forEach(card => {
+            const restaurantName = card.querySelector('.card-title').textContent.toLowerCase();
+            const restaurantCategory = card.querySelector('.category').textContent.toLowerCase();
+
+            if (restaurantName.includes(query.toLowerCase()) || restaurantCategory.includes(query.toLowerCase())) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
     }
 });

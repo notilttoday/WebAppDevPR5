@@ -278,6 +278,7 @@ button {
 
 .restaurants .card-text {
     min-height: auto;
+    width: 375px;
 }
 
 .card-heading {
