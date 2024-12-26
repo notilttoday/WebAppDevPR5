@@ -10,6 +10,105 @@ const list = document.querySelector('.cards-restaurants')
 const search = document.querySelector('.input-search');
 const restaurantCardsContainer = document.querySelector('.cards-restaurants');
 const sectionTitle = document.querySelector('.section-title');
+const modalWindowCart = document.querySelector('.modal-cart');
+const cartButton = document.getElementById('cart-button');
+const closeCartModalBtn = document.querySelector('.modal-cart .close');
+const clearCartButton = document.querySelector('.clear-cart');
+const foodRowsContainer = document.querySelector('.modal-body');
+const modalPriceTag = document.querySelector('.modal-pricetag');
+
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function updateCart() {
+    foodRowsContainer.innerHTML = '';
+    let totalPrice = 0;
+
+    cart.forEach(item => {
+        const foodRow = document.createElement('div');
+        foodRow.className = 'food-row';
+        foodRow.innerHTML = `
+            <span class="food-name">${item.name}</span>
+            <strong class="food-price">${item.price} ₴</strong>
+            <div class="food-counter">
+                <button class="counter-button decrease">-</button>
+                <span class="counter">${item.quantity}</span>
+                <button class="counter-button increase">+</button>
+            </div>
+        `;
+        foodRowsContainer.append(foodRow);
+
+        totalPrice += item.price * item.quantity;
+    });
+
+    modalPriceTag.textContent = `${totalPrice} ₴`;
+}
+
+function addToCart(item) {
+    const existingItemIndex = cart.findIndex(cartItem => cartItem.name === item.name);
+    
+    if (existingItemIndex !== -1) {
+        cart[existingItemIndex].quantity += 1;
+    } else {
+        cart.push({ ...item, quantity: 1 });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCart();
+}
+
+document.addEventListener('click', (event) => {
+    const addButton = event.target.closest('.button-add-cart');
+    
+    if (addButton) {
+        const card = addButton.closest('.card');
+        const name = card.querySelector('.card-title-reg').textContent;
+        const price = parseInt(card.querySelector('.card-price-bold').textContent.replace(' ₴', ''));
+        const description = card.querySelector('.ingredients').textContent;
+        const image = card.querySelector('.card-image').src;
+
+        const item = { name, price, description, image };
+        addToCart(item);
+    }
+});
+
+cartButton.addEventListener('click', () => {
+    modalWindowCart.style.display = 'flex';
+    updateCart();
+});
+
+closeCartModalBtn.addEventListener('click', () => {
+    modalWindowCart.style.display = 'none';
+});
+
+clearCartButton.addEventListener('click', () => {
+    localStorage.removeItem('cart');
+    cart = [];
+    updateCart();
+});
+
+foodRowsContainer.addEventListener('click', (event) => {
+    if (event.target.classList.contains('increase')) {
+        const foodRow = event.target.closest('.food-row');
+        const foodName = foodRow.querySelector('.food-name').textContent;
+        const foodItem = cart.find(item => item.name === foodName);
+
+        foodItem.quantity += 1;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart();
+    }
+
+    if (event.target.classList.contains('decrease')) {
+        const foodRow = event.target.closest('.food-row');
+        const foodName = foodRow.querySelector('.food-name').textContent;
+        const foodItem = cart.find(item => item.name === foodName);
+
+        if (foodItem.quantity > 1) {
+            foodItem.quantity -= 1;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+    }
+});
 
 function createRestaurantCard(restaurant) {
     const { name, image, stars, price, kitchen, products, time_of_delivery } = restaurant;
@@ -179,7 +278,7 @@ function closeAuthModal() {
 function loginUser(login) {
     localStorage.setItem('user', login);
     loginButton.style.display = 'none';
-    logoutButton.style.display = 'block';
+    logoutButton.style.display = 'flex';
     userNameDisplay.textContent = login;
     userNameDisplay.style.display = 'block';
     closeAuthModal();
@@ -187,7 +286,7 @@ function loginUser(login) {
 
 function logoutUser() {
     localStorage.removeItem('user');
-    loginButton.style.display = 'block';
+    loginButton.style.display = 'flex';
     logoutButton.style.display = 'none';
     userNameDisplay.textContent = '';
 }

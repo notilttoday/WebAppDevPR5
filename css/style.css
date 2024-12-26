@@ -165,6 +165,17 @@ button {
     margin: 0 5px;
 }
 
+.button-out-svg {
+    width: 24px;
+    height: 24px;
+    background-color: #fff;
+    -webkit-mask: url("../img/icon/exit.png") no-repeat 50% 50%;
+    mask: url("../img/icon/exit.png") no-repeat 50% 50%;
+    background-repeat: no-repeat;
+    -webkit-mask-size: 20px;
+    mask-size: 20px;
+}
+
 .user-name {
     display: none;
     margin-right: 20px;
@@ -819,8 +830,8 @@ button {
         width: 24px;
         height: 24px;
         background-color: #fff;
-        -webkit-mask: url(../img/icon/logout.svg) no-repeat 50% 50%;
-        mask: url(../img/icon/logout.svg) no-repeat 50% 50%;
+        -webkit-mask: url("../img/icon/logout.svg") no-repeat 50% 50%;
+        mask: url("../img/icon/logout.svg") no-repeat 50% 50%;
         background-repeat: no-repeat;
         -webkit-mask-size: 20px;
         mask-size: 20px;
