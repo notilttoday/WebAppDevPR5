@@ -589,6 +589,18 @@ button {
     padding: 15px 20px;
     font-size: 20px;
     line-height: 23px;
+    min-width: 101px;
+}
+
+.phone-container {
+    width: 200px;
+    margin: 0 20px;
+}
+
+.input-phone {
+    border-radius: 7px;
+    padding: 5px;
+    margin-top: 5px;
 }
 
 .swiper {

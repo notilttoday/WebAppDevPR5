@@ -1,3 +1,20 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getDatabase, ref, child, get, push, set } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCIZCUhOlvm_NMyYNuJVm8H7LX5KePbOJ0",
+  authDomain: "restaurantspr-1272c.firebaseapp.com",
+  databaseURL: "https://restaurantspr-1272c-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId: "restaurantspr-1272c",
+  storageBucket: "restaurantspr-1272c.firebasestorage.app",
+  messagingSenderId: "713780578435",
+  appId: "1:713780578435:web:278668342c3527c4bd73b6",
+  measurementId: "G-YWE2H66H84"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 const modalWindowAuth = document.querySelector('.modal-auth');
 const loginForm = document.getElementById('logInForm');
 const inputLogin = document.getElementById('login');
@@ -16,8 +33,53 @@ const closeCartModalBtn = document.querySelector('.modal-cart .close');
 const clearCartButton = document.querySelector('.clear-cart');
 const foodRowsContainer = document.querySelector('.modal-body');
 const modalPriceTag = document.querySelector('.modal-pricetag');
+const orderButton = document.querySelector('.button-order');
 
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    async function saveOrderToFirebase(cart, phoneNumber) {
+        const ordersRef = ref(db, 'orders');
+        try {
+            const newOrderRef = push(ordersRef);
+            const userLogin = localStorage.getItem('user');
+            await set(newOrderRef, {
+                cart,
+                phoneNumber,
+                userLogin,
+                timestamp: new Date().toISOString(),
+            });
+        } catch (error) {
+            console.error("Помилка при збереженні замовлення:", error);
+        }
+    }
+
+    orderButton.addEventListener('click', async () => {
+        const phoneNumber = document.getElementById('phone').value.trim();
+        if (!phoneNumber) {
+            alert('Будь ласка, введіть номер телефону!');
+            return;
+        }
+
+        if (cart.length === 0) {
+            alert('Ваш кошик порожній!');
+            return;
+        }
+
+        try {
+            await saveOrderToFirebase(cart, phoneNumber);
+            alert('Замовлення успішно оформлено!');
+
+            localStorage.removeItem('cart');
+            cart = [];
+            updateCart();
+            modalWindowCart.style.display = 'none';
+        } catch (error) {
+            console.error('Помилка під час оформлення замовлення:', error);
+            alert('Сталася помилка. Спробуйте ще раз.');
+        }
+    })
+})
 
 function updateCart() {
     foodRowsContainer.innerHTML = '';
